@@ -128,7 +128,7 @@ const render = (props: Props) => {
                       value={item.value}
                       placeholder="user@example.com"
                       showLabel={false}
-                      onChange={value => handleChangeInput(i, value)}
+                      onChange={(value:any) => handleChangeInput(i, value)}
                     />
                   ) : (
                     <ReadOnlyLabel> {item.value} </ReadOnlyLabel>
@@ -142,7 +142,7 @@ const render = (props: Props) => {
                   }
                   value={item.access}
                   showLabel={false}
-                  onChange={value => handleChangeSelect(i, value)}
+                  onChange={(value:any) => handleChangeSelect(i, value)}
                 />
                 {item.category === Category.User && (
                   <DeleteButton

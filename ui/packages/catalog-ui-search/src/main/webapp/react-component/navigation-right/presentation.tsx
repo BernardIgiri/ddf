@@ -27,7 +27,7 @@ export interface Props {
 const navigationRightUserIcon = '1rem'
 const unseenNotifications = keyframes`
   0% {
-    opacity: ${props => props.theme.minimumOpacity};
+    opacity: ${(props:any) => props.theme.minimumOpacity};
   }
   100% {
     opacity: 1;

@@ -20,7 +20,7 @@ const InputView = require('../input/input.view.js')
 const InputThumbnailView = require('../input/thumbnail/input-thumbnail.view.js')
 const InputDateView = require('../input/date/input-date.view.js')
 const InputTimeView = require('../input/time/input-time.view.js')
-const InputLocationView = require('../input/location/input-location.view.js')
+import InputLocationView from '../input/location'
 const InputEnumView = require('../input/enum/input-enum.view.js')
 const InputRadioView = require('../input/radio/input-radio.view.js')
 const InputNumberView = require('../input/number/input-number.view.js')
