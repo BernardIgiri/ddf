@@ -5,8 +5,6 @@ import {
   modelToGeo,
   modelToShape,
   modelToCoordinateUnit,
-  modelToKeyword,
-  modelToHasKeyword,
 } from './model-to-geo-adapter'
 
 const reactToMarionetteAdapter = Marionette.ItemView.extend({

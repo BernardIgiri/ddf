@@ -109,7 +109,7 @@ class SplitButton extends React.Component<Props, State> {
         </DefaultButton>
         <Icon
           className="fa fa-chevron-down toggle"
-          onClick={(e:any) => this.onToggle(e)}
+          onClick={(e: any) => this.onToggle(e)}
         />
         {this.state.isOpen ? this.renderMenu(menu) : null}
       </Root>

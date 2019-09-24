@@ -24,6 +24,7 @@ declare module 'styled-components' {
   export function keyframes(
     strings: TemplateStringsArray,
     ...interpolations: FlattenInterpolation<ThemeProps<ThemeInterface>>[]
+    // @ts-ignore
   ): Keyframes
   // @ts-ignore
   export const ThemeContext: React.Context<DefaultTheme>

@@ -30,7 +30,11 @@ const render = (props: Props) => {
     background: themeContext ? color(themeContext as ThemeInterface) : '',
   }
 
-  return <ThemeProvider theme={modifiedTheme as ThemeInterface}>{children}</ThemeProvider>
+  return (
+    <ThemeProvider theme={modifiedTheme as ThemeInterface}>
+      {children}
+    </ThemeProvider>
+  )
 }
 
 export default hot(module)(render)
