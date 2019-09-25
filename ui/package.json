@@ -45,13 +45,13 @@
       "packages/!(catalog-ui-search-e2e)*"
     ],
     "nohoist": [
-      "**/catalog-ui-search/styled-components",
       "**/imperio"
     ]
   },
   "resolutions": {
     "admin-ui/@connexta/atlas/backbone.marionette": "1.8.8",
-    "@connexta/ace": "git://github.com/connexta/ace.git#f51c1b59ec73fea2c196cf5b59eaf4ad48dddcee"
+    "@connexta/ace": "git://github.com/connexta/ace.git#f51c1b59ec73fea2c196cf5b59eaf4ad48dddcee",
+    "styled-components": "4.4.0"
   },
   "name": "ui"
 }

@@ -4,7 +4,7 @@ import { geometry, shapes, coordinates } from 'geospatialdraw'
 type Props = {
   hasKeyword: boolean
   keyword?: string
-  geoJSON: geometry.GeometryJSON
+  geo: geometry.GeometryJSON
   shape: shapes.Shape
   coordinateUnit: coordinates.CoordinateUnit
   onUpdateGeo: (geo: geometry.GeometryJSON) => void
@@ -15,7 +15,7 @@ class LocationEditor extends React.Component<Props> {
     const {
       hasKeyword,
       keyword,
-      geoJSON,
+      geo,
       shape,
       coordinateUnit,
       onUpdateGeo,
@@ -23,7 +23,7 @@ class LocationEditor extends React.Component<Props> {
     let Editor: any
     if (hasKeyword) {
       // TODO add back keyword selector
-      return keyword || null
+      return <span>{keyword || null}</span>
     } else {
       switch (shape) {
         case 'Line': {
@@ -42,10 +42,13 @@ class LocationEditor extends React.Component<Props> {
           Editor = coordinates.BBoxGeoEditor
           break
         }
+        default: {
+          throw new Error(`Unexpected shape "${shape}" found.`)
+        }
       }
       return (
         <Editor
-          geo={geoJSON}
+          geo={geo}
           coordinateUnit={coordinateUnit}
           onUpdateGeo={onUpdateGeo}
         />

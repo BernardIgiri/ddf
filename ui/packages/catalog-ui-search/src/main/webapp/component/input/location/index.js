@@ -1,23 +1,32 @@
 const Marionette = require('marionette')
 import * as React from 'react'
 import LocationEditor from './location-editor'
-import {
-  modelToGeo,
-  modelToShape,
-  modelToCoordinateUnit,
-} from './model-to-geo-adapter'
+import { GEOMETRY_ID } from './constants'
+import { geometry, shapes, coordinates } from 'geospatialdraw'
 
 const reactToMarionetteAdapter = Marionette.ItemView.extend({
   template(props) {
-    const geoJSON = modelToGeo(props)
-    const shape = modelToShape(props)
-    const coordinateUnit = modelToCoordinateUnit(props)
-    const onUpdateGeo = geo => console.log(geo)
+    const {
+      geo = geometry.makeEmptyGeometry(GEOMETRY_ID, 'Polygon'),
+      shape = 'Polygon',
+      coordinateUnit = coordinates.LAT_LON,
+      hasKeyword = false,
+      keyword = ''
+    } = (props.value || {})
+    const onUpdateGeo = geo => {
+      this.model.set('value', {
+        geo,
+        shape,
+        coordinateUnit,
+        hasKeyword,
+        keyword
+      })
+    }
     return (
       <LocationEditor
-        hasKeyword={props.hasKeyword === true}
-        keyword={props.keyword}
-        geometry={geoJSON}
+        hasKeyword={hasKeyword}
+        keyword={keyword}
+        geo={geo}
         shape={shape}
         coordinateUnit={coordinateUnit}
         onUpdateGeo={onUpdateGeo}

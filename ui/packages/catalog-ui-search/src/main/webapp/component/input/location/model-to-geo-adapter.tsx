@@ -86,7 +86,7 @@ const modeToShape: ModeShapeMap = {
   keyword: 'Polygon',
 }
 
-const modelToShape = ({ mode }: Model): shapes.Shape => modeToShape[mode]
+const modelToShape = ({ mode }: Model): shapes.Shape => modeToShape[mode] || 'Polygon'
 
 interface LocationTypeCoordinateUniteMap {
   [key: string]: coordinates.CoordinateUnit
@@ -102,6 +102,6 @@ const locationTypeToCoordinateUnit: LocationTypeCoordinateUniteMap = {
 const modelToCoordinateUnit = ({
   locationType,
 }: Model): coordinates.CoordinateUnit =>
-  locationTypeToCoordinateUnit[locationType]
+  locationTypeToCoordinateUnit[locationType] || coordinates.LAT_LON
 
 export { modelToGeo, modelToShape, modelToCoordinateUnit }
