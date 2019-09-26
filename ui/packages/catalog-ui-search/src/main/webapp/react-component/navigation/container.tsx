@@ -13,8 +13,11 @@
  *
  **/
 import * as React from 'react'
+import * as ol from 'openlayers'
 import Navigation from './presentation'
 import withListenTo, { WithBackboneProps } from '../backbone-container'
+import { geometry, shapes } from 'geospatialdraw'
+import { GEOMETRY_ID } from '../../component/input/location'
 
 const store = require('../../js/store.js')
 const wreqr = require('../../js/wreqr.js')
@@ -50,6 +53,8 @@ type Props = {
 } & WithBackboneProps
 
 type State = {
+  shape: shapes.Shape
+  geo: geometry.GeometryJSON
   hasLogo: boolean
   hasUnavailable: boolean
   hasUnsaved: boolean
@@ -58,14 +63,33 @@ type State = {
 }
 
 class NavigationContainer extends React.Component<Props, State> {
+  onCancel: () => void
+  onOk: () => void
+  onSetShape: (shape: shapes.Shape) => void
+  onUpdate: (geo:geometry.GeometryJSON) => void
   constructor(props: Props) {
     super(props)
     this.state = {
+      shape: 'Polygon',
+      geo: geometry.makeEmptyGeometry(GEOMETRY_ID, 'Polygon'),
       hasLogo: hasLogo(),
       hasUnavailable: hasUnavailable(),
       hasUnsaved: hasUnsaved(),
       isDrawing: isDrawing(),
       logo: properties.ui.vendorImage,
+    }
+    // TODO fill these out
+    this.onCancel = () => {
+
+    }
+    this.onOk = () => {
+
+    }
+    this.onSetShape = () => {
+
+    }
+    this.onUpdate = (_geo:geometry.GeometryJSON) => {
+
     }
   }
   componentDidMount() {
@@ -97,8 +121,17 @@ class NavigationContainer extends React.Component<Props, State> {
     })
   }
   render() {
+    // TODO somehow I need a reference to the openlayers map here
+    const map = new ol.Map({})
     return (
       <Navigation
+        shape={this.state.shape}
+        map={map}
+        geo={this.state.geo}
+        onCancel={this.onCancel}
+        onOk={this.onOk}
+        onSetShape={this.onSetShape}
+        onUpdate={this.onUpdate}
         isDrawing={this.state.isDrawing}
         hasUnavailable={this.state.hasUnavailable}
         hasUnsaved={this.state.hasUnsaved}

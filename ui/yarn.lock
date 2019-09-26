@@ -12018,8 +12018,8 @@ geojson-vt@^2.1.0:
   resolved "https://registry.yarnpkg.com/geojson-vt/-/geojson-vt-2.4.0.tgz#3c1cf44493f35eb4d2c70c95da6550de66072c05"
 
 "geospatialdraw@https://github.com/connexta/geospatialdraw#editable-circle":
-  version "0.3.0"
-  resolved "https://github.com/connexta/geospatialdraw#9e4c7610d35102135c500d98dd5a028f835c937b"
+  version "0.3.4"
+  resolved "https://github.com/connexta/geospatialdraw#0d2db8d824f37444e651e8c367c051ac6e103eed"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "1.2.21"
     "@fortawesome/free-solid-svg-icons" "5.10.1"

@@ -13,16 +13,27 @@
  *
  **/
 import * as React from 'react'
+import * as ol from 'openlayers'
 import styled from 'styled-components'
 import { CustomElement } from '../styles/mixins'
 import { ChangeBackground } from '../styles/mixins'
 import { transparentize, readableColor } from 'polished'
 import NavigationLeftComponent from '../navigation-left'
 import NavigationRightComponent from '../navigation-right'
-import CancelDrawingContainer from '../cancel-drawing'
 import Routes from '../routes'
+import { menu, geometry, shapes } from 'geospatialdraw'
+import MAP_STYLE from './map-style'
+
+const { DrawingMenu } = menu
 
 interface Props {
+  shape: shapes.Shape
+  map: ol.Map
+  geo: geometry.GeometryJSON
+  onCancel: () => void
+  onOk: () => void
+  onSetShape: (shape: shapes.Shape) => void
+  onUpdate: (geoJSON:geometry.GeometryJSON) => void
   isDrawing: boolean
   hasUnavailable: boolean
   hasUnsaved: boolean
@@ -58,22 +69,6 @@ const NavigationMiddle = styled.div<Props>`
   text-overflow: ellipsis;
 `
 
-const CancelDrawingButton = styled.button`
-  position: absolute;
-  z-index: 101;
-  height: 100%;
-  line-height: ${props => props.theme.multiple(2, props.theme.minimumLineSize)};
-  width: 100%;
-  transition: transform ${props => props.theme.coreTransitionTime} ease-in-out;
-  transform: ${(props: Props) => {
-    if (props.isDrawing) {
-      return 'translateY(0%)'
-    } else {
-      return 'translateY(-100%)'
-    }
-  }};
-`
-
 const Navigation = styled.div`
   ${CustomElement} ${props =>
     ChangeBackground(props.theme.backgroundNavigation)}
@@ -95,25 +90,66 @@ const Navigation = styled.div`
   }
 `
 
-export default (props: Props) => (
-  <Navigation>
-    <CancelDrawingContainer turnOffDrawing={props.turnOffDrawing}>
-      <CancelDrawingButton className="is-negative" {...props}>
-        <span className="fa fa-times" />
-        <span>Cancel Drawing</span>
-      </CancelDrawingButton>
-    </CancelDrawingContainer>
-    <NavigationLeftComponent
-      logo={props.logo}
-      hasLogo={props.hasLogo}
-      hasUnavailable={props.hasUnavailable}
-      hasUnsaved={props.hasUnsaved}
-    />
-    <NavigationMiddle {...props}>
-      <Routes isMenu={true} routeDefinitions={props.routeDefinitions} />
-    </NavigationMiddle>
-    <NavigationRight>
-      <NavigationRightComponent />
-    </NavigationRight>
-  </Navigation>
-)
+const DrawingMenuContainer = styled.div`
+  position: absolute;
+  z-index: ${props => props.theme.zIndexMenubar};
+  height: 100%;
+  line-height: ${props => props.theme.multiple(2, props.theme.minimumLineSize)};
+  width: 100%;
+  transition: transform ${props => props.theme.coreTransitionTime} ease-in-out;
+  transform: ${(props: Props) => {
+    if (props.isDrawing) {
+      return 'translateY(0%)'
+    } else {
+      return 'translateY(-100%)'
+    }
+  }};
+`
+
+export default (props: Props) => {
+  const {
+    shape,
+    map,
+    isDrawing,
+    geo,
+    onCancel,
+    onOk,
+    onSetShape,
+    onUpdate,
+    logo,
+    hasLogo,
+    hasUnavailable,
+    hasUnsaved,
+    routeDefinitions
+  } = props
+  return (
+    <Navigation>
+      <DrawingMenuContainer className="is-negative" {...props}>
+        <DrawingMenu
+        shape={shape}
+        map={map}
+        isActive={isDrawing}
+        geometry={geo}
+        onCancel={onCancel}
+        onOk={onOk}
+        onSetShape={onSetShape}
+        onUpdate={onUpdate}
+        mapStyle={MAP_STYLE}
+        disabledShapes={['Point']}
+        />
+      </DrawingMenuContainer>
+      <NavigationLeftComponent
+        logo={logo}
+        hasLogo={hasLogo}
+        hasUnavailable={hasUnavailable}
+        hasUnsaved={hasUnsaved}
+      />
+      <NavigationMiddle {...props}>
+        <Routes isMenu={true} routeDefinitions={routeDefinitions} />
+      </NavigationMiddle>
+      <NavigationRight>
+        <NavigationRightComponent />
+      </NavigationRight>
+    </Navigation>
+  )
+}
