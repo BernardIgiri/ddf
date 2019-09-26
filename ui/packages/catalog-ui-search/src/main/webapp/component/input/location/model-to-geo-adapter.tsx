@@ -86,7 +86,8 @@ const modeToShape: ModeShapeMap = {
   keyword: 'Polygon',
 }
 
-const modelToShape = ({ mode }: Model): shapes.Shape => modeToShape[mode] || 'Polygon'
+const modelToShape = ({ mode }: Model): shapes.Shape =>
+  modeToShape[mode] || 'Polygon'
 
 interface LocationTypeCoordinateUniteMap {
   [key: string]: coordinates.CoordinateUnit
