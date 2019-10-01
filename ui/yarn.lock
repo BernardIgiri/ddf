@@ -12019,7 +12019,7 @@ geojson-vt@^2.1.0:
 
 "geospatialdraw@https://github.com/connexta/geospatialdraw#editable-circle":
   version "0.3.4"
-  resolved "https://github.com/connexta/geospatialdraw#0d2db8d824f37444e651e8c367c051ac6e103eed"
+  resolved "https://github.com/connexta/geospatialdraw#e2f899e7957c7253dce688c06298a336eaf743f2"
   dependencies:
     "@fortawesome/fontawesome-svg-core" "1.2.21"
     "@fortawesome/free-solid-svg-icons" "5.10.1"

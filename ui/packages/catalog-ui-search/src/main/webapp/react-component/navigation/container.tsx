@@ -18,6 +18,7 @@ import Navigation from './presentation'
 import withListenTo, { WithBackboneProps } from '../backbone-container'
 import { geometry, shapes } from 'geospatialdraw'
 import { GEOMETRY_ID } from '../../component/input/location'
+import * as mapCommands from '../../js/events/map'
 
 const store = require('../../js/store.js')
 const wreqr = require('../../js/wreqr.js')
@@ -45,7 +46,10 @@ const isDrawing = () => {
 }
 
 const turnOffDrawing = () => {
-  wreqr.vent.trigger('search:drawend', store.get('content').get('drawingModel'))
+  wreqr.vent.trigger(
+    mapCommands.DRAW_END,
+    store.get('content').get('drawingModel')
+  )
 }
 
 type Props = {
@@ -54,24 +58,31 @@ type Props = {
 
 type State = {
   shape: shapes.Shape
-  geo: geometry.GeometryJSON
+  geo: geometry.GeometryJSON | null
+  originalGeo: geometry.GeometryJSON
   hasLogo: boolean
   hasUnavailable: boolean
   hasUnsaved: boolean
   isDrawing: boolean
   logo: string
+  map: ol.Map | null
 }
 
 class NavigationContainer extends React.Component<Props, State> {
   onCancel: () => void
   onOk: () => void
   onSetShape: (shape: shapes.Shape) => void
-  onUpdate: (geo:geometry.GeometryJSON) => void
+  onUpdate: (geo: geometry.GeometryJSON) => void
+  onStartDrawing: (shape: shapes.Shape, geo: geometry.GeometryJSON) => void
+  onMapLoaded: () => void
   constructor(props: Props) {
     super(props)
     this.state = {
+      // @ts-ignore
+      map: window.g_OpenLayersMap || null,
       shape: 'Polygon',
-      geo: geometry.makeEmptyGeometry(GEOMETRY_ID, 'Polygon'),
+      geo: null,
+      originalGeo: geometry.makeEmptyGeometry(GEOMETRY_ID, 'Polygon'),
       hasLogo: hasLogo(),
       hasUnavailable: hasUnavailable(),
       hasUnsaved: hasUnsaved(),
@@ -79,17 +90,43 @@ class NavigationContainer extends React.Component<Props, State> {
       logo: properties.ui.vendorImage,
     }
     // TODO fill these out
+    this.onMapLoaded = () => {
+      // @ts-ignore
+      const map = window.g_OpenLayersMap || null
+      this.setState({ map })
+    }
     this.onCancel = () => {
-
+      this.setState(
+        {
+          isDrawing: false,
+        },
+        () => {
+          wreqr.vent.trigger(mapCommands.DRAW_END, this.state.originalGeo)
+        }
+      )
     }
     this.onOk = () => {
-
+      this.setState(
+        {
+          isDrawing: false,
+        },
+        () => {
+          wreqr.vent.trigger(mapCommands.DRAW_END, this.state.geo)
+        }
+      )
     }
-    this.onSetShape = () => {
-
+    this.onSetShape = (shape: shapes.Shape) => {
+      const geo = null
+      const originalGeo = geometry.makeEmptyGeometry(GEOMETRY_ID, shape)
+      this.setState({ geo, originalGeo, shape }, () => {
+        wreqr.vent.trigger(mapCommands.SET_SHAPE, shape)
+      })
     }
-    this.onUpdate = (_geo:geometry.GeometryJSON) => {
-
+    this.onUpdate = (geo: geometry.GeometryJSON) => {
+      this.setState({ geo })
+    }
+    this.onStartDrawing = (shape: shapes.Shape, geo: geometry.GeometryJSON) => {
+      this.setState({ geo, originalGeo: geo, shape })
     }
   }
   componentDidMount() {
@@ -104,6 +141,12 @@ class NavigationContainer extends React.Component<Props, State> {
       'change:drawing',
       this.handleDrawing.bind(this)
     )
+    wreqr.vent.on(mapCommands.DRAW_START, this.onStartDrawing)
+    wreqr.vent.on(mapCommands.OL_MAP_LOADED, this.onMapLoaded)
+  }
+  componentWillUnmount() {
+    wreqr.vent.off(mapCommands.DRAW_START, this.onStartDrawing)
+    wreqr.vent.off(mapCommands.OL_MAP_LOADED, this.onMapLoaded)
   }
   handleSaved() {
     this.setState({
@@ -121,22 +164,36 @@ class NavigationContainer extends React.Component<Props, State> {
     })
   }
   render() {
-    // TODO somehow I need a reference to the openlayers map here
-    const map = new ol.Map({})
+    const {
+      map,
+      shape,
+      geo,
+      isDrawing,
+      hasUnavailable,
+      hasUnsaved,
+      hasLogo,
+      logo
+    } = this.state
+    const {
+      onCancel,
+      onOk,
+      onSetShape,
+      onUpdate
+    } = this
     return (
       <Navigation
-        shape={this.state.shape}
+        shape={shape}
         map={map}
-        geo={this.state.geo}
-        onCancel={this.onCancel}
-        onOk={this.onOk}
-        onSetShape={this.onSetShape}
-        onUpdate={this.onUpdate}
-        isDrawing={this.state.isDrawing}
-        hasUnavailable={this.state.hasUnavailable}
-        hasUnsaved={this.state.hasUnsaved}
-        hasLogo={this.state.hasLogo}
-        logo={this.state.logo}
+        geo={geo}
+        onCancel={onCancel}
+        onOk={onOk}
+        onSetShape={onSetShape}
+        onUpdate={onUpdate}
+        isDrawing={isDrawing}
+        hasUnavailable={hasUnavailable}
+        hasUnsaved={hasUnsaved}
+        hasLogo={hasLogo}
+        logo={logo}
         turnOffDrawing={() => {
           turnOffDrawing()
         }}

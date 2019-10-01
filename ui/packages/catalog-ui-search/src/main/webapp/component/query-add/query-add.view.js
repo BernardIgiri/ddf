@@ -25,6 +25,7 @@ const QueryConfirmationView = require('../confirmation/query/confirmation.query.
 const SearchForm = require('../search-form/search-form')
 const LoadingView = require('../loading/loading.view.js')
 const wreqr = require('../../js/wreqr.js')
+import * as mapCommands from '../../js/events/map'
 const announcement = require('../announcement/index.jsx')
 const user = require('../singletons/user-instance.js')
 import { InvalidSearchFormMessage } from 'component/announcement/CommonMessages'

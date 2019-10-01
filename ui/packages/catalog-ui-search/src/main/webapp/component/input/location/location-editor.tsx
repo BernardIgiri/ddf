@@ -3,6 +3,7 @@ import { geometry, shapes, coordinates } from 'geospatialdraw'
 const Button = require('../../../react-component/button')
 const Dropdown = require('../../../react-component/dropdown')
 const { Menu, MenuItem } = require('../../../react-component/menu')
+import { GEOMETRY_ID } from './constants'
 import styled from 'styled-components'
 
 const {
@@ -58,7 +59,7 @@ const locationTypeList: LocationType[] = [
 type Props = {
   hasKeyword: boolean
   keyword?: string
-  geo: geometry.GeometryJSON
+  geo: geometry.GeometryJSON | null
   shape: shapes.Shape
   coordinateUnit: coordinates.CoordinateUnit
   onUpdateGeo: (geo: geometry.GeometryJSON) => void
@@ -133,30 +134,26 @@ class LocationEditor extends React.Component<Props> {
             ))}
           </Menu>
         </Dropdown>
-        {
-          hasDrawing ? (
-            <TabRow>
-              {this.renderTab(coordinates.LAT_LON)}
-              {this.renderTab(coordinates.LAT_LON_DMS)}
-              {this.renderTab(coordinates.USNG)}
-              {this.renderTab(coordinates.UTM)}
-            </TabRow>
-          ) : null
-        }
+        {hasDrawing ? (
+          <TabRow>
+            {this.renderTab(coordinates.LAT_LON)}
+            {this.renderTab(coordinates.LAT_LON_DMS)}
+            {this.renderTab(coordinates.USNG)}
+            {this.renderTab(coordinates.UTM)}
+          </TabRow>
+        ) : null}
         <Editor
           keyword={keyword || null}
-          geo={geo}
+          geo={geo || geometry.makeEmptyGeometry(GEOMETRY_ID, shape)}
           coordinateUnit={coordinateUnit}
           onUpdateGeo={onUpdateGeo}
         />
-        {
-          hasDrawing ? (
-            <Button className="location-draw is-primary" onClick={onDraw}>
-              <span className="fa fa-globe" />
-              <span>Draw</span>
-            </Button>
-          ) : null
-        }
+        {hasDrawing ? (
+          <Button className="location-draw is-primary" onClick={onDraw}>
+            <span className="fa fa-globe" />
+            <span>Draw</span>
+          </Button>
+        ) : null}
       </React.Fragment>
     )
   }

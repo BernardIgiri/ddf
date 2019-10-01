@@ -21,6 +21,7 @@ const Metacard = require('../../js/model/Metacard.js')
 const Query = require('../../js/model/Query.js')
 const Workspace = require('../../js/model/Workspace.js')
 const QueryResult = require('../../js/model/QueryResult.js')
+import * as mapCommands from '../../js/events/map'
 
 module.exports = Backbone.AssociatedModel.extend({
   relations: [
@@ -76,12 +77,7 @@ module.exports = Backbone.AssociatedModel.extend({
     drawingModel: undefined,
   },
   initialize() {
-    this.listenTo(wreqr.vent, 'search:drawline', this.turnOnDrawing)
-    this.listenTo(wreqr.vent, 'search:drawcircle', this.turnOnDrawing)
-    this.listenTo(wreqr.vent, 'search:drawpoly', this.turnOnDrawing)
-    this.listenTo(wreqr.vent, 'search:drawbbox', this.turnOnDrawing)
-    this.listenTo(wreqr.vent, 'search:drawstop', this.turnOffDrawing)
-    this.listenTo(wreqr.vent, 'search:drawend', this.turnOffDrawing)
+    this.listenTo(wreqr.vent, mapCommands.DRAW_START, this.turnOnDrawing)
     this.listenTo(
       this.get('activeSearchResults'),
       'update add remove reset',

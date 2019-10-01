@@ -16,6 +16,7 @@
 import wrapNum from '../../../react-component/utils/wrap-num/wrap-num.tsx'
 import * as React from 'react'
 import ZoomToHomeButton from '../../../react-component/button/split-button/zoomToHome.tsx'
+import * as mapCommands from '../../../js/events/map.tsx'
 
 const wreqr = require('../../../js/wreqr.js')
 const template = require('./map.hbs')
@@ -418,7 +419,10 @@ module.exports = Marionette.LayoutView.extend({
     this.loadMap().then(Map => {
       this.createMap(Map)
       this.hasLoadedMap = true
-      this.onMapLoaded(this.map.getOpenLayersMap())
+      const olMap = this.map.getOpenLayersMap()
+      window.g_OpenLayersMap = olMap
+      wreqr.vent.trigger(mapCommands.OL_MAP_LOADED)
+      this.onMapLoaded(olMap)
     })
   },
   startLoading() {
@@ -528,5 +532,6 @@ module.exports = Marionette.LayoutView.extend({
     if (this.map) {
       this.map.destroy()
     }
+    window.g_OpenLayersMap = null
   },
 })

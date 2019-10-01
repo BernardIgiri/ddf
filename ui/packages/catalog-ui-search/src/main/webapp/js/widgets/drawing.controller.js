@@ -23,25 +23,26 @@ module.exports = Marionette.Controller.extend({
     if (typeof this.drawingType === 'undefined') {
       throw 'drawingType needs to be overwritten'
     }
-    this.listenTo(wreqr.vent, `search:${this.drawingType}display`, function(
-      model
-    ) {
-      this.show(model)
-    })
-    this.listenTo(wreqr.vent, `search:draw${this.drawingType}`, function(
-      model
-    ) {
-      this.draw(model)
-    })
-    this.listenTo(wreqr.vent, 'search:drawstop', function(model) {
-      this.stop(model)
-    })
-    this.listenTo(wreqr.vent, 'search:drawend', function(model) {
-      this.destroyByModel(model)
-    })
-    this.listenTo(wreqr.vent, 'search:destroyAllDraw', function(model) {
-      this.destroyAll(model)
-    })
+    // TODO replace or remove
+    // this.listenTo(wreqr.vent, `search:${this.drawingType}display`, function(
+    //   model
+    // ) {
+    //   this.show(model)
+    // })
+    // this.listenTo(wreqr.vent, `search:draw${this.drawingType}`, function(
+    //   model
+    // ) {
+    //   this.draw(model)
+    // })
+    // this.listenTo(wreqr.vent, 'search:drawstop', function(model) {
+    //   this.stop(model)
+    // })
+    // this.listenTo(wreqr.vent, 'search:drawend', function(model) {
+    //   this.destroyByModel(model)
+    // })
+    // this.listenTo(wreqr.vent, 'search:destroyAllDraw', function(model) {
+    //   this.destroyAll(model)
+    // })
   },
   views: [],
   destroyAll() {

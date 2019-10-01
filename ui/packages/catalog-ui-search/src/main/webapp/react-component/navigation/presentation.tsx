@@ -22,18 +22,18 @@ import NavigationLeftComponent from '../navigation-left'
 import NavigationRightComponent from '../navigation-right'
 import Routes from '../routes'
 import { menu, geometry, shapes } from 'geospatialdraw'
-import MAP_STYLE from './map-style'
+import { DRAWING_STYLE } from './map-style'
 
 const { DrawingMenu } = menu
 
 interface Props {
   shape: shapes.Shape
-  map: ol.Map
-  geo: geometry.GeometryJSON
+  map: ol.Map | null
+  geo: geometry.GeometryJSON | null
   onCancel: () => void
   onOk: () => void
   onSetShape: (shape: shapes.Shape) => void
-  onUpdate: (geoJSON:geometry.GeometryJSON) => void
+  onUpdate: (geoJSON: geometry.GeometryJSON) => void
   isDrawing: boolean
   hasUnavailable: boolean
   hasUnsaved: boolean
@@ -120,23 +120,27 @@ export default (props: Props) => {
     hasLogo,
     hasUnavailable,
     hasUnsaved,
-    routeDefinitions
+    routeDefinitions,
   } = props
   return (
     <Navigation>
       <DrawingMenuContainer className="is-negative" {...props}>
-        <DrawingMenu
-        shape={shape}
-        map={map}
-        isActive={isDrawing}
-        geometry={geo}
-        onCancel={onCancel}
-        onOk={onOk}
-        onSetShape={onSetShape}
-        onUpdate={onUpdate}
-        mapStyle={MAP_STYLE}
-        disabledShapes={['Point']}
-        />
+        {
+          map === null ? null : (
+            <DrawingMenu
+              shape={shape}
+              map={map}
+              isActive={isDrawing}
+              geometry={geo}
+              onCancel={onCancel}
+              onOk={onOk}
+              onSetShape={onSetShape}
+              onUpdate={onUpdate}
+              mapStyle={DRAWING_STYLE}
+              disabledShapes={['Point']}
+            />
+          )
+        }
       </DrawingMenuContainer>
       <NavigationLeftComponent
         logo={logo}

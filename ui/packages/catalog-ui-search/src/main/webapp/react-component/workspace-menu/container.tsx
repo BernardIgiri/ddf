@@ -55,12 +55,13 @@ class WorkspaceMenu extends React.Component<Props, State> {
     this.setState(mapToState())
   }
   render() {
-    return this.state.currentWorkspace === undefined ? null : (
+    const { branding, product, currentWorkspace, saved } = this.state
+    return currentWorkspace === undefined ? null : (
       <WorkspaceMenuPresentation
-        branding={this.state.branding}
-        product={this.state.product}
-        currentWorkspace={this.state.currentWorkspace}
-        saved={this.state.saved}
+        branding={branding}
+        product={product}
+        currentWorkspace={currentWorkspace}
+        saved={saved}
       />
     )
   }

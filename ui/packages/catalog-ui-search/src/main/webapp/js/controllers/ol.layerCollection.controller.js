@@ -20,6 +20,7 @@ const ol = require('openlayers')
 const properties = require('../properties.js')
 const CommonLayerController = require('./common.layerCollection.controller.js')
 const user = require('../../component/singletons/user-instance.js')
+const wreqr = require('../wreqr.js')
 
 const createTile = (
   { show, alpha, ...options },

@@ -9,7 +9,5 @@ const reactToMarionetteAdapter = Marionette.ItemView.extend({
   },
 })
 
-export {
-  GEOMETRY_ID
-}
+export { GEOMETRY_ID }
 export default reactToMarionetteAdapter

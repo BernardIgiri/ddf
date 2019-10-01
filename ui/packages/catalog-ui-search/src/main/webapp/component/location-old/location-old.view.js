@@ -89,7 +89,8 @@ module.exports = Marionette.LayoutView.extend({
       model: this.model,
       options: {
         onDraw: drawingType => {
-          wreqr.vent.trigger('search:draw' + this.model.get('mode'), this.model)
+          // TODO remove
+          // wreqr.vent.trigger('search:draw' + this.model.get('mode'), this.model)
         },
       },
     }
@@ -226,6 +227,7 @@ module.exports = Marionette.LayoutView.extend({
       line: undefined,
       lineWidth: 1,
     })
+    // TODO update or remove
     wreqr.vent.trigger('search:drawend', this.model)
     this.$el.trigger('change')
   },
@@ -263,6 +265,7 @@ module.exports = Marionette.LayoutView.extend({
     })
   },
   onDestroy() {
+    // TODO update or remove
     wreqr.vent.trigger('search:drawend', this.model)
   },
   isValid() {

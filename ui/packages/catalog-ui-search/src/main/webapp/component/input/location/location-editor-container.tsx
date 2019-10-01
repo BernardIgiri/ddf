@@ -1,16 +1,13 @@
 import * as React from 'react'
 import LocationEditor from './location-editor'
-import { GEOMETRY_ID } from './constants'
 import { geometry, shapes, coordinates } from 'geospatialdraw'
+import * as map from '../../../js/events/map'
 const wreqr = require('../../../js/wreqr.js')
-
-const DRAW_START_PREFIX = 'search:draw'
-const DRAW_END_COMMAND = 'search:drawend'
 
 type State = {
   hasKeyword: boolean
   keyword?: string
-  geo: geometry.GeometryJSON
+  geo: geometry.GeometryJSON | null
   shape: shapes.Shape
   coordinateUnit: coordinates.CoordinateUnit
   isDrawing: boolean
@@ -21,22 +18,32 @@ type Props = {
   geo?: geometry.GeometryJSON
 }
 
-const makeDefaultGeo = () => geometry.makeEmptyGeometry(GEOMETRY_ID, 'Polygon')
-
 class LocationEditorContainer extends React.Component<Props, State> {
   onUpdateGeo: (geo: geometry.GeometryJSON) => void
   onChangeLocationType: (locationType: string) => void
   onChangeCoordinateUnit: (coordinateUnit: coordinates.CoordinateUnit) => void
   onDraw: () => void
+  onDrawEnd: (geo: geometry.GeometryJSON | null) => void
+  onSetShape: (shape: shapes.Shape | null) => void
   constructor(props: Props) {
     super(props)
     this.state = {
       hasKeyword: false,
       keyword: '',
-      geo: makeDefaultGeo(),
+      geo: null,
       shape: 'Polygon',
       coordinateUnit: coordinates.LAT_LON,
       isDrawing: false,
+    }
+    this.onDrawEnd = (geo: geometry.GeometryJSON | null = null) => {
+      if (geo !== null) {
+        this.setState({ isDrawing: false, geo })
+      }
+    }
+    this.onSetShape = (shape: shapes.Shape | null = null) => {
+      if (shape !== null) {
+        this.setState({ shape })
+      }
     }
     this.onUpdateGeo = geo => {
       this.setState({ geo })
@@ -47,7 +54,7 @@ class LocationEditorContainer extends React.Component<Props, State> {
         this.setState({ hasKeyword: true })
       } else {
         const shape = locationType as shapes.Shape
-        const geo = geometry.makeEmptyGeometry(GEOMETRY_ID, shape)
+        const geo = null
         this.setState({
           hasKeyword: false,
           shape,
@@ -61,37 +68,15 @@ class LocationEditorContainer extends React.Component<Props, State> {
       this.setState({ coordinateUnit })
     }
     this.onDraw = () => {
-      let drawCommand = DRAW_START_PREFIX
-      switch (this.state.shape) {
-        case 'Line': {
-          drawCommand += 'line'
-          break
-        }
-        case 'Polygon': {
-          drawCommand += 'poly'
-          break
-        }
-        case 'Bounding Box': {
-          drawCommand += 'bbox'
-          break
-        }
-        case 'Point Radius': {
-          drawCommand += 'circle'
-          break
-        }
-        default: {
-          throw new Error(`Invalid shape "${this.state.shape}"!`)
-        }
-      }
       this.setState({ isDrawing: true }, () => {
-        wreqr.vent.trigger(drawCommand, this.state.geo)
+        wreqr.vent.trigger(map.DRAW_START, this.state.shape, this.state.geo)
       })
     }
   }
   cancelDrawing() {
     if (this.state.isDrawing) {
       this.setState({ isDrawing: false }, () => {
-        wreqr.vent.trigger(DRAW_END_COMMAND)
+        wreqr.vent.trigger(map.DRAW_END)
       })
     }
   }
@@ -101,6 +86,12 @@ class LocationEditorContainer extends React.Component<Props, State> {
       keyword,
       geo,
     })
+    wreqr.vent.on(map.DRAW_END, this.onDrawEnd)
+    wreqr.vent.on(map.SET_SHAPE, this.onSetShape)
+  }
+  componentWillUnmount() {
+    wreqr.vent.off(map.DRAW_END, this.onDrawEnd)
+    wreqr.vent.off(map.SET_SHAPE, this.onSetShape)
   }
   componentDidUpdate(prevProps: Props) {
     if (

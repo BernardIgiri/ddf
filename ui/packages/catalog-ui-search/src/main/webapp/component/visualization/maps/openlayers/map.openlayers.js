@@ -98,6 +98,7 @@ module.exports = function OpenlayersMap(
 ) {
   let overlays = {}
   let shapes = []
+  let isAlive = true
   const map = createMap(insertionElement)
   listenToResize()
   setupTooltip(map)
@@ -653,11 +654,12 @@ module.exports = function OpenlayersMap(
       shapes = []
     },
     getOpenLayersMap() {
-      return map
+      return isAlive ? map : null
     },
     destroy() {
       this.destroyDrawingTools()
       unlistenToResize()
+      isAlive = false
     },
   })
 
