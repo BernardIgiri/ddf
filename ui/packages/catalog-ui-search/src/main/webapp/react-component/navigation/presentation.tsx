@@ -22,7 +22,7 @@ import NavigationLeftComponent from '../navigation-left'
 import NavigationRightComponent from '../navigation-right'
 import Routes from '../routes'
 import { menu, geometry, shapes } from 'geospatialdraw'
-import { DRAWING_STYLE } from './map-style'
+import MAP_STYLE from './map-style'
 
 const { DrawingMenu } = menu
 
@@ -125,22 +125,20 @@ export default (props: Props) => {
   return (
     <Navigation>
       <DrawingMenuContainer className="is-negative" {...props}>
-        {
-          map === null ? null : (
-            <DrawingMenu
-              shape={shape}
-              map={map}
-              isActive={isDrawing}
-              geometry={geo}
-              onCancel={onCancel}
-              onOk={onOk}
-              onSetShape={onSetShape}
-              onUpdate={onUpdate}
-              mapStyle={DRAWING_STYLE}
-              disabledShapes={['Point']}
-            />
-          )
-        }
+        {map === null ? null : (
+          <DrawingMenu
+            shape={shape}
+            map={map}
+            isActive={isDrawing}
+            geometry={geo}
+            onCancel={onCancel}
+            onOk={onOk}
+            onSetShape={onSetShape}
+            onUpdate={onUpdate}
+            mapStyle={MAP_STYLE}
+            disabledShapes={['Point']}
+          />
+        )}
       </DrawingMenuContainer>
       <NavigationLeftComponent
         logo={logo}

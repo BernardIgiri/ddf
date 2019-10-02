@@ -22,11 +22,6 @@ const Map = require('../map')
 const utility = require('./utility')
 const DrawingUtility = require('../DrawingUtility')
 
-const DrawBBox = require('../../../../js/widgets/openlayers.bbox.js')
-const DrawCircle = require('../../../../js/widgets/openlayers.circle.js')
-const DrawPolygon = require('../../../../js/widgets/openlayers.polygon.js')
-const DrawLine = require('../../../../js/widgets/openlayers.line.js')
-
 const properties = require('../../../../js/properties.js')
 const Openlayers = require('openlayers')
 const Geocoder = require('../../../../js/view/openlayers.geocoder.js')
@@ -92,7 +87,7 @@ function offMap([longitude, latitude]) {
 module.exports = function OpenlayersMap(
   insertionElement,
   selectionInterface,
-  notificationEl,
+  notifcationEl,
   componentElement,
   mapModel
 ) {
@@ -102,7 +97,6 @@ module.exports = function OpenlayersMap(
   const map = createMap(insertionElement)
   listenToResize()
   setupTooltip(map)
-  const drawingTools = setupDrawingTools(map)
 
   function setupTooltip(map) {
     map.on('pointermove', e => {
@@ -118,27 +112,6 @@ module.exports = function OpenlayersMap(
     })
   }
 
-  function setupDrawingTools(map) {
-    return {
-      bbox: new DrawBBox.Controller({
-        map,
-        notificationEl,
-      }),
-      circle: new DrawCircle.Controller({
-        map,
-        notificationEl,
-      }),
-      polygon: new DrawPolygon.Controller({
-        map,
-        notificationEl,
-      }),
-      line: new DrawLine.Controller({
-        map,
-        notificationEl,
-      }),
-    }
-  }
-
   function resizeMap() {
     map.updateSize()
   }
@@ -152,24 +125,6 @@ module.exports = function OpenlayersMap(
   }
 
   const exposedMethods = _.extend({}, Map, {
-    drawLine(model) {
-      drawingTools.line.draw(model)
-    },
-    drawBbox(model) {
-      drawingTools.bbox.draw(model)
-    },
-    drawCircle(model) {
-      drawingTools.circle.draw(model)
-    },
-    drawPolygon(model) {
-      drawingTools.polygon.draw(model)
-    },
-    destroyDrawingTools() {
-      drawingTools.line.destroy()
-      drawingTools.polygon.destroy()
-      drawingTools.circle.destroy()
-      drawingTools.bbox.destroy()
-    },
     onLeftClick(callback) {
       $(map.getTargetElement()).on('click', e => {
         const boundingRect = map.getTargetElement().getBoundingClientRect()

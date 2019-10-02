@@ -10,9 +10,9 @@ const {
   BUFFER_SHAPE_PROPERTY,
 } = geometry
 
-const LINE_WIDTH = 1.5
-const POINT_SIZE = 2.5
-const SCALE_FACTOR = 1.25
+const LINE_WIDTH = 1.8
+const POINT_SIZE = 4
+const SCALE_FACTOR = 1.5
 
 const RENDERER_STYLE = (feature: ol.Feature): ol.style.Style =>
   new ol.style.Style({
@@ -122,4 +122,4 @@ const DRAWING_STYLE = (
   }
 }
 
-export { RENDERER_STYLE, DRAWING_STYLE }
+export default DRAWING_STYLE

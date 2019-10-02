@@ -172,14 +172,9 @@ class NavigationContainer extends React.Component<Props, State> {
       hasUnavailable,
       hasUnsaved,
       hasLogo,
-      logo
+      logo,
     } = this.state
-    const {
-      onCancel,
-      onOk,
-      onSetShape,
-      onUpdate
-    } = this
+    const { onCancel, onOk, onSetShape, onUpdate } = this
     return (
       <Navigation
         shape={shape}
