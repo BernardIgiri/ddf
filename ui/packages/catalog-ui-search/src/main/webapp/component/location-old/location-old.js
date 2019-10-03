@@ -21,6 +21,9 @@ const store = require('../../js/store.js')
 const Common = require('../../js/Common.js')
 const dmsUtils = require('../location-new/utils/dms-utils.js')
 const DistanceUtils = require('../../js/DistanceUtils.js')
+const wreqr = require('../../js/wreqr.js')
+import * as mapCommands from '../../js/events/map'
+import { geometry, shapes } from 'geospatialdraw'
 
 const converter = new usngs.Converter()
 const minimumDifference = 0.0001
@@ -156,7 +159,45 @@ module.exports = Backbone.AssociatedModel.extend({
     })
   },
 
+  drawingEnd(geoJSON) {
+    const shape = this.shapeDetector.shapeFromGeoJSON(geoJSON)
+    switch (shape) {
+      case 'Line': {
+        this.set('line', geoJSON.geometry.coordinates)
+        this.set('lineWidth', geoJSON.properties.buffer)
+        this.set('lineUnits', geoJSON.properties.bufferUnit)
+        break;
+      }
+      case 'Polygon': {
+        this.set('polygon', geoJSON.geometry.coordinates[0])
+        this.set('polygonBufferWidth', geoJSON.properties.buffer)
+        this.set('polygonBufferUnits', geoJSON.properties.bufferUnit)
+        break;
+      }
+      case 'Point Radius': {
+        this.set('lat', geoJSON.geometry.coordinates[0])
+        this.set('lon', geoJSON.geometry.coordinates[1])
+        this.set('radius', geoJSON.properties.buffer)
+        this.set('radiusUnits', geoJSON.properties.bufferUnit)
+        break;
+      }
+      case 'Bounding Box': {
+        this.set('west', geoJSON.bbox[0])
+        this.set('south', geoJSON.bbox[1])
+        this.set('east', geoJSON.bbox[2])
+        this.set('north', geoJSON.bbox[3])
+        break;
+      }
+    }
+  },
+
+  destroy() {
+    wreqr.vent.off(mapCommands.DRAW_END, this.drawingEnd)
+  },
+
   initialize() {
+    this.shapeDetector = new shapes.ShapeDetector()
+    wreqr.vent.on(mapCommands.DRAW_END, this.drawingEnd)
     this.listenTo(
       this,
       'change:north change:south change:east change:west',

@@ -47,8 +47,7 @@ const isDrawing = () => {
 
 const turnOffDrawing = () => {
   wreqr.vent.trigger(
-    mapCommands.DRAW_END,
-    store.get('content').get('drawingModel')
+    mapCommands.DRAW_END
   )
 }
 

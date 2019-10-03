@@ -74,10 +74,10 @@ module.exports = Backbone.AssociatedModel.extend({
     activeSearchResults: [],
     activeSearchResultsAttributes: [],
     drawing: false,
-    drawingModel: undefined,
   },
   initialize() {
     this.listenTo(wreqr.vent, mapCommands.DRAW_START, this.turnOnDrawing)
+    this.listenTo(wreqr.vent, mapCommands.DRAW_END, this.turnOffDrawing)
     this.listenTo(
       this.get('activeSearchResults'),
       'update add remove reset',
@@ -104,9 +104,8 @@ module.exports = Backbone.AssociatedModel.extend({
   getActiveSearchResultsAttributes() {
     return this.get('activeSearchResultsAttributes')
   },
-  turnOnDrawing(model) {
+  turnOnDrawing() {
     this.set('drawing', true)
-    this.set('drawingModel', model)
     $('html').toggleClass('is-drawing', true)
   },
   turnOffDrawing() {
